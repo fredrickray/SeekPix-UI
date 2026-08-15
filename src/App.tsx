@@ -2,12 +2,14 @@ import { useCallback, useState } from "react";
 import type { Stats } from "./api/types";
 import SearchPage from "./pages/SearchPage";
 import UploadPage from "./pages/UploadPage";
+import VerifyPage from "./pages/VerifyPage";
 
-type Tab = "search" | "upload";
+type Tab = "search" | "upload" | "verify";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "search", label: "Search" },
   { id: "upload", label: "Upload" },
+  { id: "verify", label: "Verify" },
 ];
 
 export default function App() {
@@ -70,6 +72,7 @@ export default function App() {
       <main>
         {tab === "search" && <SearchPage onStatsChange={onStatsChange} />}
         {tab === "upload" && <UploadPage onStatsChange={onStatsChange} />}
+        {tab === "verify" && <VerifyPage />}
       </main>
     </div>
   );
