@@ -1,4 +1,4 @@
-import type { Job, Photo, PhotoPage, Stats } from "./types";
+import type { FaceMatch, Job, Photo, PhotoPage, Stats, VerifyResult } from "./types";
 
 /** Raised for any non-2xx backend response, carrying a readable message. */
 export class ApiError extends Error {
@@ -72,4 +72,33 @@ export function uploadPhotos(files: File[]): Promise<Job> {
 
 export function getJob(id: string, signal?: AbortSignal): Promise<Job> {
   return request<Job>(`/jobs/${id}`, { signal });
+}
+
+export function findSamePerson(
+  file: File,
+  { topK = 20 }: { topK?: number } = {},
+  signal?: AbortSignal,
+): Promise<FaceMatch[]> {
+  const form = new FormData();
+  form.append("file", file);
+  return request<FaceMatch[]>(`/faces/find?top_k=${topK}`, {
+    method: "POST",
+    body: form,
+    signal,
+  });
+}
+
+export function verifyFaces(
+  fileA: File,
+  fileB: File,
+  signal?: AbortSignal,
+): Promise<VerifyResult> {
+  const form = new FormData();
+  form.append("file_a", fileA);
+  form.append("file_b", fileB);
+  return request<VerifyResult>("/faces/verify", {
+    method: "POST",
+    body: form,
+    signal,
+  });
 }

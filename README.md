@@ -68,7 +68,7 @@ src/
 |--------|--------|
 | **Search** | Done — empty query browses recent photos; typing runs semantic search with scores; click opens lightbox |
 | **Upload** | Done — drag/drop or file picker, client-side type filter, background job with live progress |
-| **Verify** | Not built yet |
+| **Verify** | Done — find appearances in the library, or compare two face photos |
 | **Browse** | Not built yet |
 
 Layout:
@@ -77,8 +77,10 @@ Layout:
 src/
 ├── pages/
 │   ├── SearchPage.tsx
-│   └── UploadPage.tsx
+│   ├── UploadPage.tsx
+│   └── VerifyPage.tsx
 ├── api/
 ├── components/
-└── App.tsx          # tab shell (Search | Upload)
+│   └── ImagePicker.tsx   # single-image dropzone with preview
+└── App.tsx               # tab shell (Search | Upload | Verify)
 ```
