@@ -64,11 +64,21 @@ src/
 
 ## Screens
 
-**Search** is built. An empty query browses recently indexed photos, so the grid
-is never blank; typing runs a semantic search and shows relevance scores on each
-tile. Clicking a photo opens the full-size image.
+| Screen | Status |
+|--------|--------|
+| **Search** | Done — empty query browses recent photos; typing runs semantic search with scores; click opens lightbox |
+| **Upload** | Done — drag/drop or file picker, client-side type filter, background job with live progress |
+| **Verify** | Not built yet |
+| **Browse** | Not built yet |
 
-Upload, Verify, and Browse are not built yet. The backend already exposes
-everything they need (`POST /photos/upload` with `GET /jobs/{id}` for progress,
-`POST /faces/find`, `POST /faces/verify`, and paginated `GET /photos`), and
-`src/api/client.ts` already wraps upload and job polling.
+Layout:
+
+```text
+src/
+├── pages/
+│   ├── SearchPage.tsx
+│   └── UploadPage.tsx
+├── api/
+├── components/
+└── App.tsx          # tab shell (Search | Upload)
+```

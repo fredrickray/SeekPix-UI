@@ -1,60 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
-import { ApiError, getStats, listPhotos, searchPhotos } from "./api/client";
-import type { Photo, Stats } from "./api/types";
-import Lightbox from "./components/Lightbox";
-import PhotoGrid from "./components/PhotoGrid";
-import SearchBar from "./components/SearchBar";
-import { GridSkeleton, Notice } from "./components/States";
+import { useCallback, useState } from "react";
+import type { Stats } from "./api/types";
+import SearchPage from "./pages/SearchPage";
+import UploadPage from "./pages/UploadPage";
+
+type Tab = "search" | "upload";
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: "search", label: "Search" },
+  { id: "upload", label: "Upload" },
+];
 
 export default function App() {
-  const [query, setQuery] = useState("");
-  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [tab, setTab] = useState<Tab>("search");
   const [stats, setStats] = useState<Stats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selected, setSelected] = useState<Photo | null>(null);
 
-  const isSearching = query.trim().length > 0;
-
-  useEffect(() => {
-    const controller = new AbortController();
-    getStats(controller.signal)
-      .then(setStats)
-      .catch(() => setStats(null));
-    return () => controller.abort();
+  const onStatsChange = useCallback((next: Stats | null) => {
+    setStats(next);
   }, []);
-
-  // One effect drives both modes: an empty query browses the library instead of
-  // searching, so the grid is never blank on first load.
-  useEffect(() => {
-    const controller = new AbortController();
-    const trimmed = query.trim();
-
-    setLoading(true);
-    setError(null);
-
-    const load = trimmed
-      ? searchPhotos(trimmed, 24, controller.signal)
-      : listPhotos({ limit: 30 }, controller.signal).then((page) => page.items);
-
-    load
-      .then((result) => {
-        setPhotos(result);
-        setLoading(false);
-      })
-      .catch((cause: unknown) => {
-        if (controller.signal.aborted) return;
-        setError(
-          cause instanceof ApiError ? cause.message : "Something went wrong.",
-        );
-        setPhotos([]);
-        setLoading(false);
-      });
-
-    return () => controller.abort();
-  }, [query]);
-
-  const handleQueryChange = useCallback((next: string) => setQuery(next), []);
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10">
@@ -80,48 +42,35 @@ export default function App() {
           )}
         </div>
 
-        <SearchBar
-          value={query}
-          onChange={handleQueryChange}
-          busy={loading && isSearching}
-        />
+        <nav
+          aria-label="Primary"
+          className="flex gap-1 rounded-xl border border-neutral-800 bg-neutral-900/60 p-1"
+        >
+          {TABS.map((item) => {
+            const active = tab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setTab(item.id)}
+                className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition
+                  ${
+                    active
+                      ? "bg-neutral-800 text-white shadow-sm"
+                      : "text-neutral-400 hover:text-neutral-200"
+                  }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
       </header>
 
       <main>
-        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-neutral-500">
-          {isSearching ? `Results for “${query.trim()}”` : "Recently indexed"}
-        </h2>
-
-        {loading && <GridSkeleton />}
-
-        {!loading && error && (
-          <Notice title="Couldn't load photos" tone="error">
-            {error}
-          </Notice>
-        )}
-
-        {!loading && !error && photos.length === 0 && (
-          <Notice
-            title={isSearching ? "No matches" : "Your library is empty"}
-          >
-            {isSearching
-              ? "Nothing in the library resembles that description. Try different wording."
-              : "Index a folder with scripts/index_folder.py, then reload."}
-          </Notice>
-        )}
-
-        {!loading && !error && photos.length > 0 && (
-          <PhotoGrid
-            photos={photos}
-            showScores={isSearching}
-            onSelect={setSelected}
-          />
-        )}
+        {tab === "search" && <SearchPage onStatsChange={onStatsChange} />}
+        {tab === "upload" && <UploadPage onStatsChange={onStatsChange} />}
       </main>
-
-      {selected && (
-        <Lightbox photo={selected} onClose={() => setSelected(null)} />
-      )}
     </div>
   );
 }
