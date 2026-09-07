@@ -37,3 +37,14 @@ export interface Job {
   errors: string[];
   error: string | null;
 }
+
+export interface FaceMatch {
+  photo: Photo;
+  face_id: number;
+  score: number;
+}
+
+export interface VerifyResult {
+  score: number | null;
+  matched: boolean | null;
+}
