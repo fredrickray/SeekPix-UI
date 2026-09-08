@@ -69,7 +69,7 @@ src/
 | **Search** | Done — empty query browses recent photos; typing runs semantic search with scores; click opens lightbox |
 | **Upload** | Done — drag/drop or file picker, client-side type filter, background job with live progress |
 | **Verify** | Done — find appearances in the library, or compare two face photos |
-| **Browse** | Not built yet |
+| **Browse** | Done — paginated full library (newest first), refresh, lightbox |
 
 Layout:
 
@@ -78,9 +78,12 @@ src/
 ├── pages/
 │   ├── SearchPage.tsx
 │   ├── UploadPage.tsx
-│   └── VerifyPage.tsx
+│   ├── VerifyPage.tsx
+│   └── BrowsePage.tsx
 ├── api/
 ├── components/
-│   └── ImagePicker.tsx   # single-image dropzone with preview
-└── App.tsx               # tab shell (Search | Upload | Verify)
+│   └── ImagePicker.tsx
+└── App.tsx               # tab shell (Search | Upload | Verify | Browse)
 ```
+
+Phase A of the UI (demo screens) is complete against the existing SeekPix API.

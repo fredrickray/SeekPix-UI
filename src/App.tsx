@@ -1,15 +1,17 @@
 import { useCallback, useState } from "react";
 import type { Stats } from "./api/types";
+import BrowsePage from "./pages/BrowsePage";
 import SearchPage from "./pages/SearchPage";
 import UploadPage from "./pages/UploadPage";
 import VerifyPage from "./pages/VerifyPage";
 
-type Tab = "search" | "upload" | "verify";
+type Tab = "search" | "upload" | "verify" | "browse";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "search", label: "Search" },
   { id: "upload", label: "Upload" },
   { id: "verify", label: "Verify" },
+  { id: "browse", label: "Browse" },
 ];
 
 export default function App() {
@@ -46,7 +48,7 @@ export default function App() {
 
         <nav
           aria-label="Primary"
-          className="flex gap-1 rounded-xl border border-neutral-800 bg-neutral-900/60 p-1"
+          className="flex flex-wrap gap-1 rounded-xl border border-neutral-800 bg-neutral-900/60 p-1"
         >
           {TABS.map((item) => {
             const active = tab === item.id;
@@ -55,7 +57,7 @@ export default function App() {
                 key={item.id}
                 type="button"
                 onClick={() => setTab(item.id)}
-                className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition
+                className={`min-w-[5.5rem] flex-1 rounded-lg px-4 py-2 text-sm font-medium transition
                   ${
                     active
                       ? "bg-neutral-800 text-white shadow-sm"
@@ -73,6 +75,7 @@ export default function App() {
         {tab === "search" && <SearchPage onStatsChange={onStatsChange} />}
         {tab === "upload" && <UploadPage onStatsChange={onStatsChange} />}
         {tab === "verify" && <VerifyPage />}
+        {tab === "browse" && <BrowsePage onStatsChange={onStatsChange} />}
       </main>
     </div>
   );
