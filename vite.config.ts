@@ -12,6 +12,7 @@ const apiPaths = [
   "/jobs",
   "/stats",
   "/index",
+  "/indexes",
   "/faces",
   "/health",
 ];
