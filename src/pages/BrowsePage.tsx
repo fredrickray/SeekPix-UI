@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { ApiError, getStats, listPhotos } from "../api/client";
+import { ApiError, deletePhoto, getStats, listPhotos } from "../api/client";
 import type { Photo, Stats } from "../api/types";
 import Lightbox from "../components/Lightbox";
 import PhotoGrid from "../components/PhotoGrid";
@@ -68,7 +68,7 @@ export default function BrowsePage({ onStatsChange }: Props) {
         <div>
           <h2 className="text-lg font-medium tracking-tight">Browse</h2>
           <p className="mt-1 text-sm text-neutral-400">
-            Full library, newest first. Click a photo to open it full size.
+            Full library, newest first. Open a photo to view or delete it.
           </p>
         </div>
         <button
@@ -144,7 +144,15 @@ export default function BrowsePage({ onStatsChange }: Props) {
       )}
 
       {selected && (
-        <Lightbox photo={selected} onClose={() => setSelected(null)} />
+        <Lightbox
+          photo={selected}
+          onClose={() => setSelected(null)}
+          onDelete={async (photo) => {
+            await deletePhoto(photo.id);
+            setSelected(null);
+            setReloadToken((n) => n + 1);
+          }}
+        />
       )}
     </div>
   );
