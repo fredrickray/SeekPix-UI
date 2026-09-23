@@ -74,6 +74,25 @@ export function getJob(id: string, signal?: AbortSignal): Promise<Job> {
   return request<Job>(`/jobs/${id}`, { signal });
 }
 
+export interface DeleteResult {
+  photo_id: number;
+  filename: string;
+  deleted_file: boolean;
+  deleted_thumbnail: boolean;
+  removed_clip_vectors: number;
+  removed_face_vectors: number;
+}
+
+export function deletePhoto(
+  photoId: number,
+  signal?: AbortSignal,
+): Promise<DeleteResult> {
+  return request<DeleteResult>(`/photos/${photoId}`, {
+    method: "DELETE",
+    signal,
+  });
+}
+
 export function findSamePerson(
   file: File,
   { topK = 20 }: { topK?: number } = {},
